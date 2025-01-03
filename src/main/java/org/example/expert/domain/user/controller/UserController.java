@@ -13,15 +13,19 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable long userId) {
-        return ResponseEntity.ok(userService.getUser(userId));
-    }
+  @GetMapping("/users/{userId}")
+  public ResponseEntity<UserResponse> getUser(@PathVariable long userId
+  ) {
+    return ResponseEntity.ok(userService.getUser(userId));
+  }
 
-    @PutMapping("/users")
-    public void changePassword(@Auth AuthUser authUser, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
-        userService.changePassword(authUser.getId(), userChangePasswordRequest);
-    }
+  @PutMapping("/users")
+  public void changePassword(
+      @Auth AuthUser authUser,
+      @RequestBody UserChangePasswordRequest userChangePasswordRequest
+  ) {
+    userService.changePassword(authUser.getId(), userChangePasswordRequest);
+  }
 }

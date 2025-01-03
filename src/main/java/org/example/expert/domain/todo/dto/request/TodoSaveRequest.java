@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TodoSaveRequest {
 
-    @NotBlank
-    private String title;
-    @NotBlank
-    private String contents;
+  @NotBlank
+  private String title;
+
+  @NotBlank
+  private String contents;
 }
