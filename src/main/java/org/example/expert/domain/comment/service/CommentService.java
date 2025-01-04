@@ -10,9 +10,7 @@ import org.example.expert.domain.common.util.CommentMapper;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.entity.Todo;
-import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.todo.service.TodoService;
-import org.example.expert.domain.user.dto.response.UserResponse;
 import org.example.expert.domain.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +30,8 @@ public class CommentService {
       CommentSaveRequest commentSaveRequest
   ) {
     User user = User.fromAuthUser(authUser);
-    Todo todo = todoService.findTodoById(todoId);
+    Todo todo = todoService.findTodoById(todoId)
+        .orElseThrow(() -> new InvalidRequestException("Todo not found"));
     // 중복코드 제거: commentSaveRequest ( Dto -> Entity 메서드 추가, 변경 )
     Comment newComment = commentSaveRequest.of(user, todo);
     Comment savedComment = commentRepository.save(newComment);

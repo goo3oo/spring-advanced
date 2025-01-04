@@ -1,5 +1,6 @@
 package org.example.expert.domain.todo.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.client.WeatherClient;
 import org.example.expert.domain.common.dto.AuthUser;
@@ -54,8 +55,7 @@ public class TodoService {
     return TodoMapper.toTodoResponse(todo);
   }
 
-  public Todo findTodoById(Long todoId) {
-    return todoRepository.findById(todoId)
-        .orElseThrow(() -> new InvalidRequestException("Todo not found"));
+  public Optional<Todo> findTodoById(Long todoId) {
+    return todoRepository.findById(todoId);
   }
 }

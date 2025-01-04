@@ -45,8 +45,7 @@ class ManagerServiceTest {
   public void manager_목록_조회_시_Todo가_없다면_TODO_NOT_FOUND_에러를_던진다() {
     // given
     long todoId = 1L;
-    given(todoService.findTodoById(todoId))
-        .willThrow(new InvalidRequestException("Todo not found"));
+    given(todoService.findTodoById(todoId)).willReturn(Optional.empty());
 
     // when & then
     InvalidRequestException exception = assertThrows(InvalidRequestException.class,
@@ -66,8 +65,7 @@ class ManagerServiceTest {
 
     ManagerSaveRequest managerSaveRequest = new ManagerSaveRequest(managerUserId);
 
-    given(todoRepository.findById(todoId)).willReturn(Optional.of(todo));
-
+    given(todoService.findTodoById(todoId)).willReturn(Optional.of(todo));
     // when & then
     InvalidRequestException exception = assertThrows(InvalidRequestException.class, () ->
         managerService.saveManager(authUser, todoId, managerSaveRequest)

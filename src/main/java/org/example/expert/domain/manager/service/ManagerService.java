@@ -35,8 +35,11 @@ public class ManagerService {
   ) {
     User user = User.fromAuthUser(authUser);
 
-    Todo todo = todoService.findTodoById(todoId);
-    //
+    Todo todo = todoService.findTodoById(todoId)
+        .orElseThrow(() -> new InvalidRequestException("Todo not found"));
+
+    TodoValidator.validateUserIsNotNull(todo);
+
     // 중복코드 제거: TodoValidator 추가, 변경
     TodoValidator.validateUserIsTodoCreator(user, todo);
 
@@ -51,7 +54,8 @@ public class ManagerService {
   }
 
   public List<ManagerResponse> getManagers(long todoId) {
-    Todo todo = todoService.findTodoById(todoId);
+    Todo todo = todoService.findTodoById(todoId)
+        .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
     List<Manager> managerList = managerRepository.findAllByTodoId(todo.getId());
     // 중복코드 제거: 스트림으로 변경
@@ -67,7 +71,8 @@ public class ManagerService {
   public void deleteManager(long userId, long todoId, long managerId) {
     User user = userService.findUserById(userId);
 
-    Todo todo = todoService.findTodoById(todoId);
+    Todo todo = todoService.findTodoById(todoId)
+        .orElseThrow(() -> new InvalidRequestException("Todo not found"));
     // 중복코드 제거: TodoValidator 추가, 변경
     TodoValidator.validateUserIsTodoCreator(user, todo);
 

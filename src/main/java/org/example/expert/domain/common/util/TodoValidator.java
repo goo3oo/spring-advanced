@@ -11,6 +11,12 @@ import org.springframework.util.ObjectUtils;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodoValidator {
 
+  public static void validateUserIsNotNull(Todo todo) {
+    if (todo.getUser() == null) {
+      throw new InvalidRequestException("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.");
+    }
+  }
+
   public static void validateUserIsTodoCreator(User user, Todo todo) {
     if (!ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
       throw new InvalidRequestException("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.");
