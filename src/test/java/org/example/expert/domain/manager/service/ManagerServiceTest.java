@@ -16,6 +16,7 @@ import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.manager.repository.ManagerRepository;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
+import org.example.expert.domain.todo.service.TodoService;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.UserRole;
 import org.example.expert.domain.user.repository.UserRepository;
@@ -35,19 +36,22 @@ class ManagerServiceTest {
   private UserRepository userRepository;
   @Mock
   private TodoRepository todoRepository;
+  @Mock
+  private TodoService todoService;
   @InjectMocks
   private ManagerService managerService;
 
   @Test
-  public void manager_목록_조회_시_Todo가_없다면_NPE_에러를_던진다() {
+  public void manager_목록_조회_시_Todo가_없다면_TODO_NOT_FOUND_에러를_던진다() {
     // given
     long todoId = 1L;
-    given(todoRepository.findById(todoId)).willReturn(Optional.empty());
+    given(todoService.findTodoById(todoId))
+        .willThrow(new InvalidRequestException("Todo not found"));
 
     // when & then
     InvalidRequestException exception = assertThrows(InvalidRequestException.class,
         () -> managerService.getManagers(todoId));
-    assertEquals("Manager not found", exception.getMessage());
+    assertEquals("Todo not found", exception.getMessage());
   }
 
   @Test
