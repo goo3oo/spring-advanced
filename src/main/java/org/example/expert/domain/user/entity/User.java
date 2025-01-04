@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.entity.Timestamped;
+import org.example.expert.domain.user.dto.response.UserResponse;
 import org.example.expert.domain.user.enums.UserRole;
 
 @Getter
@@ -46,5 +47,10 @@ public class User extends Timestamped {
 
   public void updateRole(UserRole userRole) {
     this.userRole = userRole;
+  }
+
+  // 중복코드 제거: Entity -> DTO 변환 메서드 추가
+  public UserResponse from() {
+    return new UserResponse(this.id, this.email);
   }
 }

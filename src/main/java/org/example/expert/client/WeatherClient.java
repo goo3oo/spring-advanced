@@ -38,8 +38,8 @@ public class WeatherClient {
 
     String today = getCurrentDate();
     for (WeatherDto weatherDto : weatherArray) {
-      if (today.equals(weatherDto.getDate())) {
-        return weatherDto.getWeather();
+      if (today.equals(weatherDto.date())) {
+        return weatherDto.weather();
       }
     }
 

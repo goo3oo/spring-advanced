@@ -5,8 +5,7 @@ import org.example.expert.config.JwtUtil;
 import org.example.expert.config.PasswordEncoder;
 import org.example.expert.domain.auth.dto.request.SigninRequest;
 import org.example.expert.domain.auth.dto.request.SignupRequest;
-import org.example.expert.domain.auth.dto.response.SigninResponse;
-import org.example.expert.domain.auth.dto.response.SignupResponse;
+import org.example.expert.domain.auth.dto.response.AuthResponse;
 import org.example.expert.domain.auth.exception.AuthException;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.entity.User;
@@ -25,22 +24,23 @@ public class AuthService {
   private final JwtUtil jwtUtil;
 
   @Transactional
-  public SignupResponse signup(SignupRequest signupRequest) {
+  public AuthResponse signup(SignupRequest signupRequest) {
     if (userRepository.existsByEmail(signupRequest.getEmail())) {
       throw new InvalidRequestException("이미 존재하는 이메일입니다.");
     }
 
     String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
     UserRole userRole = UserRole.of(signupRequest.getUserRole());
-    User newUser = new User(signupRequest.getEmail(), encodedPassword, userRole);
+    // 중복코드 제거: signupRequest ( Dto -> Entity 변경 메서드 추가, 변경 )
+    User newUser = signupRequest.of(encodedPassword, userRole);
     User savedUser = userRepository.save(newUser);
 
     String bearerToken = jwtUtil.createToken(savedUser.getId(), savedUser.getEmail(), userRole);
 
-    return new SignupResponse(bearerToken);
+    return new AuthResponse(bearerToken);
   }
 
-  public SigninResponse signin(SigninRequest signinRequest) {
+  public AuthResponse signin(SigninRequest signinRequest) {
     User user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(
         () -> new InvalidRequestException("가입되지 않은 유저입니다."));
 
@@ -50,6 +50,6 @@ public class AuthService {
 
     String bearerToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getUserRole());
 
-    return new SigninResponse(bearerToken);
+    return new AuthResponse(bearerToken);
   }
 }
