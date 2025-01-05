@@ -5,17 +5,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.expert.domain.user.enums.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-@Slf4j
 @RequiredArgsConstructor
 public class AdminInterceptor implements HandlerInterceptor {
 
   private final JwtUtil jwtUtil;
+  private final static Logger logger = LoggerFactory.getLogger(AdminInterceptor.class);
 
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
       Object handler) throws Exception {
@@ -34,7 +35,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         return false;
       }
 
-      log.info("API 요청 URL: {}, API 요청 시각: {}", request.getRequestURL(), LocalDateTime.now());
+      logger.info("API 요청 URL: {}, API 요청 시각: {}", request.getRequestURL(), LocalDateTime.now());
 
     } catch (SecurityException | MalformedJwtException e) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않는 JWT 서명입니다.");
