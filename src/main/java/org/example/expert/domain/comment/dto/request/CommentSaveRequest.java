@@ -13,11 +13,11 @@ import org.example.expert.domain.user.entity.User;
 @AllArgsConstructor
 public class CommentSaveRequest {
 
-  @NotBlank
-  private String contents;
+    @NotBlank
+    private String contents;
 
-  // 중복코드 제거: Dto -> Entity 메서드 추가
-  public Comment of(User user, Todo todo) {
-    return new Comment(contents, user, todo);
-  }
+    // Dto -> Entity 메서드 추가
+    public Comment of(User user, Todo todo) {
+        return new Comment(contents, user, todo);
+    }
 }

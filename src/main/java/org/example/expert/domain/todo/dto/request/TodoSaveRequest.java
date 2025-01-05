@@ -12,14 +12,14 @@ import org.example.expert.domain.user.entity.User;
 @AllArgsConstructor
 public class TodoSaveRequest {
 
-  @NotBlank
-  private String title;
+    @NotBlank
+    private String title;
 
-  @NotBlank
-  private String contents;
+    @NotBlank
+    private String contents;
 
-  // 중복코드 제거: DTO -> Entity 변환 메서드 추가
-  public Todo of(String weather, User user) {
-    return new Todo(title, contents, weather, user);
-  }
+    // DTO -> Entity 변환 메서드 추가
+    public Todo of(String weather, User user) {
+        return new Todo(title, contents, weather, user);
+    }
 }

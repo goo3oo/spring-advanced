@@ -23,39 +23,40 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class TodoService {
 
-  private final TodoRepository todoRepository;
-  private final WeatherClient weatherClient;
+    private final TodoRepository todoRepository;
+    private final WeatherClient weatherClient;
 
-  @Transactional
-  public TodoSaveResponse saveTodo(AuthUser authUser, TodoSaveRequest todoSaveRequest) {
-    User user = User.fromAuthUser(authUser);
+    @Transactional
+    public TodoSaveResponse saveTodo(AuthUser authUser, TodoSaveRequest todoSaveRequest) {
+        User user = User.fromAuthUser(authUser);
 
-    String weather = weatherClient.getTodayWeather();
-    // 중복코드 제거: TodoSaveRequest ( Dto -> Entity 변경 메서드 추가, 변경 )
-    Todo newTodo = todoSaveRequest.of(weather, user);
-    Todo savedTodo = todoRepository.save(newTodo);
-    // 중복코드 제거: TodoMapper 추가, 변경
-    return TodoMapper.toTodoSaveResponse(newTodo, weather);
-  }
+        String weather = weatherClient.getTodayWeather();
+        // TodoSaveRequest ( Dto -> Entity 변경 메서드 추가, 변경 )
+        Todo newTodo = todoSaveRequest.of(weather, user);
+        Todo savedTodo = todoRepository.save(newTodo);
+        //  TodoMapper 추가, 변경
+        return TodoMapper.toTodoSaveResponse(newTodo, weather);
+    }
 
-  public Page<TodoResponse> getTodos(int page, int size) {
-    Pageable pageable = PageRequest.of(page - 1, size);
+    public Page<TodoResponse> getTodos(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
 
-    Page<Todo> todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);
-    // 중복코드 제거: TodoMapper 추가, 변경
-    return todos.map(TodoMapper::toTodoResponse);
-  }
+        Page<Todo> todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);
+        // TodoMapper 추가, 변경
+        return todos.map(TodoMapper::toTodoResponse);
+    }
 
-  public TodoResponse getTodo(Long todoId) {
-    Todo todo = todoRepository.findById(todoId)
-        .orElseThrow(() -> new InvalidRequestException("Todo not found"));
+    public TodoResponse getTodo(Long todoId) {
+        Todo todo = todoRepository.findById(todoId)
+            .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
-    User user = todo.getUser();
-    // 중복코드 제거: TodoMapper 추가, 변경
-    return TodoMapper.toTodoResponse(todo);
-  }
+        User user = todo.getUser();
+        // TodoMapper 추가, 변경
+        return TodoMapper.toTodoResponse(todo);
+    }
 
-  public Optional<Todo> findTodoById(Long todoId) {
-    return todoRepository.findById(todoId);
-  }
+    // 메서드 추가
+    public Optional<Todo> findTodoById(Long todoId) {
+        return todoRepository.findById(todoId);
+    }
 }

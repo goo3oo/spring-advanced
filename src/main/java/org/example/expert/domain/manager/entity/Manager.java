@@ -12,20 +12,20 @@ import org.example.expert.domain.user.entity.User;
 @Table(name = "managers")
 public class Manager {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "todo_id", nullable = false)
-  private Todo todo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todo_id", nullable = false)
+    private Todo todo;
 
-  public Manager(User user, Todo todo) {
-    this.user = user;
-    this.todo = todo;
-  }
+    public Manager(User user, Todo todo) {
+        this.user = user;
+        this.todo = todo;
+    }
 }

@@ -9,11 +9,12 @@ import org.example.expert.domain.user.dto.response.UserResponse;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ManagerMapper {
 
-  public static ManagerResponse from(Manager manager) {
-    UserResponse user = new UserResponse(manager.getUser().getId(), manager.getUser().getEmail());
-    return new ManagerResponse(
-        manager.getId(),
-        user
-    );
-  }
+    public static ManagerResponse from(Manager manager) {
+        UserResponse user = new UserResponse(manager.getUser().getId(),
+            manager.getUser().getEmail());
+        return new ManagerResponse(
+            manager.getId(),
+            user
+        );
+    }
 }

@@ -10,12 +10,13 @@ import org.example.expert.domain.user.dto.response.UserResponse;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
 
-  public static CommentResponse from(Comment comment) {
-    UserResponse user = new UserResponse(comment.getUser().getId(), comment.getUser().getEmail());
-    return new CommentResponse(
-        comment.getId(),
-        comment.getContents(),
-        user
-    );
-  }
+    public static CommentResponse from(Comment comment) {
+        UserResponse user = new UserResponse(comment.getUser().getId(),
+            comment.getUser().getEmail());
+        return new CommentResponse(
+            comment.getId(),
+            comment.getContents(),
+            user
+        );
+    }
 }

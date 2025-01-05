@@ -18,75 +18,75 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter implements Filter {
 
-  private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
-  @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
-    Filter.super.init(filterConfig);
-  }
-
-  @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-      throws IOException, ServletException {
-    HttpServletRequest httpRequest = (HttpServletRequest) request;
-    HttpServletResponse httpResponse = (HttpServletResponse) response;
-
-    String url = httpRequest.getRequestURI();
-    log.debug("Request URL: {}", url);  // 로그 추가
-    if (url.startsWith("/auth")) {
-      chain.doFilter(request, response);
-      return;
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
     }
 
-    String bearerJwt = httpRequest.getHeader("Authorization");
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-    if (bearerJwt == null) {
-      httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰이 필요합니다.");
-      return;
-    }
-
-    String jwt = jwtUtil.substringToken(bearerJwt);
-
-    try {
-      Claims claims = jwtUtil.extractClaims(jwt);
-      if (claims == null) {
-        httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 JWT 토큰입니다.");
-        return;
-      }
-      log.debug("Request URL: {}", url);  // 로그 추가
-      UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
-
-      httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
-      httpRequest.setAttribute("email", claims.get("email"));
-      httpRequest.setAttribute("userRole", claims.get("userRole"));
-
-      if (url.startsWith("/admin")) {
-        if (!UserRole.ADMIN.equals(userRole)) {
-          httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자 권한이 없습니다.");
-          return;
+        String url = httpRequest.getRequestURI();
+        log.debug("Request URL: {}", url);  // 로그 추가
+        if (url.startsWith("/auth")) {
+            chain.doFilter(request, response);
+            return;
         }
-        chain.doFilter(request, response);
-        return;
-      }
 
-      chain.doFilter(request, response);
-    } catch (SecurityException | MalformedJwtException e) {
-      log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", e);
-      httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않는 JWT 서명입니다.");
-    } catch (ExpiredJwtException e) {
-      log.error("Expired JWT token, 만료된 JWT token 입니다.", e);
-      httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "만료된 JWT 토큰입니다.");
-    } catch (UnsupportedJwtException e) {
-      log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", e);
-      httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "지원되지 않는 JWT 토큰입니다.");
-    } catch (Exception e) {
-      log.error("Invalid JWT token, 유효하지 않는 JWT 토큰 입니다.", e);
-      httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효하지 않는 JWT 토큰입니다.");
+        String bearerJwt = httpRequest.getHeader("Authorization");
+
+        if (bearerJwt == null) {
+            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰이 필요합니다.");
+            return;
+        }
+
+        String jwt = jwtUtil.substringToken(bearerJwt);
+
+        try {
+            Claims claims = jwtUtil.extractClaims(jwt);
+            if (claims == null) {
+                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 JWT 토큰입니다.");
+                return;
+            }
+            log.debug("Request URL: {}", url);  // 로그 추가
+            UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
+
+            httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
+            httpRequest.setAttribute("email", claims.get("email"));
+            httpRequest.setAttribute("userRole", claims.get("userRole"));
+
+            if (url.startsWith("/admin")) {
+                if (!UserRole.ADMIN.equals(userRole)) {
+                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자 권한이 없습니다.");
+                    return;
+                }
+                chain.doFilter(request, response);
+                return;
+            }
+
+            chain.doFilter(request, response);
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", e);
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않는 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            log.error("Expired JWT token, 만료된 JWT token 입니다.", e);
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", e);
+            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "지원되지 않는 JWT 토큰입니다.");
+        } catch (Exception e) {
+            log.error("Invalid JWT token, 유효하지 않는 JWT 토큰 입니다.", e);
+            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효하지 않는 JWT 토큰입니다.");
+        }
     }
-  }
 
-  @Override
-  public void destroy() {
-    Filter.super.destroy();
-  }
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+    }
 }

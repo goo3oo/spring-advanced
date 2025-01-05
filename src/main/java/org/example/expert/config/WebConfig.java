@@ -12,16 +12,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-  private final AdminInterceptor adminInterceptor;
+    private final AdminInterceptor adminInterceptor;
 
-  @Override
-  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-    resolvers.add(new AuthUserArgumentResolver());
-  }
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new AuthUserArgumentResolver());
+    }
 
-  @Override
-  public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(adminInterceptor)
-        .addPathPatterns("/admin/**");
-  }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(adminInterceptor)
+            .addPathPatterns("/admin/**");
+    }
 }

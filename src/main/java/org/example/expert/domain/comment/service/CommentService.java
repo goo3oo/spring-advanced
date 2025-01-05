@@ -20,33 +20,34 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class CommentService {
 
-  private final CommentRepository commentRepository;
-  private final TodoService todoService;
+    // TodoRepository -> TodoService 주입
+    private final CommentRepository commentRepository;
+    private final TodoService todoService;
 
-  @Transactional
-  public CommentResponse saveComment(
-      AuthUser authUser,
-      long todoId,
-      CommentSaveRequest commentSaveRequest
-  ) {
-    User user = User.fromAuthUser(authUser);
-    Todo todo = todoService.findTodoById(todoId)
-        .orElseThrow(() -> new InvalidRequestException("Todo not found"));
-    // 중복코드 제거: commentSaveRequest ( Dto -> Entity 메서드 추가, 변경 )
-    Comment newComment = commentSaveRequest.of(user, todo);
-    Comment savedComment = commentRepository.save(newComment);
-    // 중복코드 제거: CommentMapper 추가, 변경
-    return CommentMapper.from(savedComment);
-  }
+    @Transactional
+    public CommentResponse saveComment(
+        AuthUser authUser,
+        long todoId,
+        CommentSaveRequest commentSaveRequest
+    ) {
+        User user = User.fromAuthUser(authUser);
+        Todo todo = todoService.findTodoById(todoId)
+            .orElseThrow(() -> new InvalidRequestException("Todo not found"));
+        // commentSaveRequest ( Dto -> Entity 메서드 추가, 변경 )
+        Comment newComment = commentSaveRequest.of(user, todo);
+        Comment savedComment = commentRepository.save(newComment);
+        // CommentMapper 추가, 변경
+        return CommentMapper.from(savedComment);
+    }
 
-  public List<CommentResponse> getComments(long todoId) {
-    List<Comment> commentList = commentRepository.findAllByTodoId(todoId);
-    // 중복코드 제거: 스트림으로 변환
-    return commentList.stream()
-        .map(comment -> {
-          User user = comment.getUser();
-          return CommentMapper.from(comment);
-        })
-        .toList();
-  }
+    public List<CommentResponse> getComments(long todoId) {
+        List<Comment> commentList = commentRepository.findAllByTodoId(todoId);
+        // 스트림으로 변환
+        return commentList.stream()
+            .map(comment -> {
+                User user = comment.getUser();
+                return CommentMapper.from(comment);
+            })
+            .toList();
+    }
 }

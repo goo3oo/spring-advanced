@@ -14,31 +14,31 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
-  @Override
-  public boolean supportsParameter(MethodParameter parameter) {
-    boolean hasAuthAnnotation = parameter.getParameterAnnotation(Auth.class) != null;
-    boolean isAuthUserType = parameter.getParameterType().equals(AuthUser.class);
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        boolean hasAuthAnnotation = parameter.getParameterAnnotation(Auth.class) != null;
+        boolean isAuthUserType = parameter.getParameterType().equals(AuthUser.class);
 
-    if (hasAuthAnnotation != isAuthUserType) {
-      throw new AuthException("@Auth와 AuthUser 타입은 함께 사용되어야 합니다.");
+        if (hasAuthAnnotation != isAuthUserType) {
+            throw new AuthException("@Auth와 AuthUser 타입은 함께 사용되어야 합니다.");
+        }
+
+        return hasAuthAnnotation;
     }
 
-    return hasAuthAnnotation;
-  }
+    @Override
+    public Object resolveArgument(
+        @Nullable MethodParameter parameter,
+        @Nullable ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest,
+        @Nullable WebDataBinderFactory binderFactory
+    ) {
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-  @Override
-  public Object resolveArgument(
-      @Nullable MethodParameter parameter,
-      @Nullable ModelAndViewContainer mavContainer,
-      NativeWebRequest webRequest,
-      @Nullable WebDataBinderFactory binderFactory
-  ) {
-    HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        Long userId = (Long) request.getAttribute("userId");
+        String email = (String) request.getAttribute("email");
+        UserRole userRole = UserRole.of((String) request.getAttribute("userRole"));
 
-    Long userId = (Long) request.getAttribute("userId");
-    String email = (String) request.getAttribute("email");
-    UserRole userRole = UserRole.of((String) request.getAttribute("userRole"));
-
-    return new AuthUser(userId, email, userRole);
-  }
+        return new AuthUser(userId, email, userRole);
+    }
 }
