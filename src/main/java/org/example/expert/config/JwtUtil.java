@@ -62,4 +62,10 @@ public class JwtUtil {
         .parseClaimsJws(token)
         .getBody();
   }
+
+  public String extractUserRole(String tokenValue) {
+    String subsToken = substringToken(tokenValue);
+    Claims claims = extractClaims(subsToken);
+    return claims.get("userRole", String.class);
+  }
 }
