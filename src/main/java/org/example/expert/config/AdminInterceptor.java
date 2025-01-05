@@ -28,9 +28,9 @@ public class AdminInterceptor implements HandlerInterceptor {
         }
 
         try {
-            String userRole = jwtUtil.extractUserRole(tokenValue);
+            UserRole userRole = UserRole.valueOf(jwtUtil.extractUserRole(tokenValue));
 
-            if (!UserRole.ADMIN.toString().equals(userRole)) {
+            if (!UserRole.ADMIN.equals(userRole)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자 권한이 없습니다.");
                 return false;
             }
