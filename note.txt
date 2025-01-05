@@ -1,0 +1,56 @@
+Level 3-1
+- AuthService.signup()
+
+Level 3-2
+- WeatherClient.getTodayWeather()
+
+Level 3-3
+전반적으로 변경해서 표기를 못 했습니다.
+
+Level 3-4
+- CommentSaveRequest 클래스: of() 추가(Dto -> Entity)
+- SignupRequest 클래스: of() 추가 (Dto -> Entity)
+- CommentService 클래스: TodoRepository 주입 -> TodoService 주입,
+                        of() 사용,
+                        Mapper 사용,
+                        for->스트림 변환
+- ManagerService 클래스: TodoRepository, UserRepository 주입 -> TodoService, UserService 주입
+				TodoValidator 사용, ManagerMapper 사용
+- TodoSaveRequest 클래스: of() 추가 (Dto -> Entity)
+- TodoService 클래스: of() 사용, TodoMapper 사용
+- UserChangePasswordRequest 클래스: Validation @Size, @Pattern 사용
+- AuthService 클래스
+- User 클래스: from() 추가 (Entity -> Dto)
+- Util package 추가
+  - CommentMapper 추가
+  - ManagerMapper 추가
+  - TodoMapper 추가
+  - TodoValidator 추가
+
+Level 4
+TodoRepository 클래스 변경
+
+Level 5-1
+PassEncoderTest 클래스 변경
+
+Level 5-2
+- 1, 3
+  - ManagerServiceTest 클래스 변경
+
+  - @Mock
+    private TodoService todoService; 추가
+  - todoService.findTodoById 로 변경(기존 코드 변경에 따른 변경)
+  - todoService 에 findTodoById() 추가
+  - ManagerService 클래스 변경
+    (기존 : TodoService 의 findTodoById()에서 예외 처리-> ManagerService 에서 예외 처리)
+
+- 2
+ - CommentServiceTest 클래스
+    -@Mock
+     private TodoService todoService; 추가
+    - todoService 로 변경(기존 코드 변경에 따른 변경)
+
+Level 5-3
+- AdminInterceptor 클래스 추가
+- JwtUtil.extractUserRole() 추가
+- WebConfig.addInterceptors() 추가
