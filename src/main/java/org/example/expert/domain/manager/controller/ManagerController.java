@@ -9,6 +9,7 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.manager.dto.request.ManagerSaveRequest;
 import org.example.expert.domain.manager.dto.response.ManagerResponse;
 import org.example.expert.domain.manager.service.ManagerService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,8 @@ public class ManagerController {
         @PathVariable long todoId,
         @Valid @RequestBody ManagerSaveRequest managerSaveRequest
     ) {
-        return ResponseEntity.ok(managerService.saveManager(authUser, todoId, managerSaveRequest));
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(managerService.saveManager(authUser, todoId, managerSaveRequest));
     }
 
     @GetMapping("/todos/{todoId}/managers")

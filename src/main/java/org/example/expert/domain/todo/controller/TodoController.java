@@ -9,6 +9,7 @@ import org.example.expert.domain.todo.dto.response.TodoResponse;
 import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
 import org.example.expert.domain.todo.service.TodoService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,8 @@ public class TodoController {
         @Auth AuthUser authUser,
         @Valid @RequestBody TodoSaveRequest todoSaveRequest
     ) {
-        return ResponseEntity.ok(todoService.saveTodo(authUser, todoSaveRequest));
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(todoService.saveTodo(authUser, todoSaveRequest));
     }
 
     @GetMapping("/todos")
